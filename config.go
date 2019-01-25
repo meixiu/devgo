@@ -30,6 +30,7 @@ type (
 	DbConfig struct {
 		Driver       string `json:"driver" yaml:"driver"`
 		Source       string `json:"source" yaml:"source"`
+		Prefix       string `json:"prefix" yaml:"prefix"`
 		MaxOpenConns int    `json:"max_open_conns" yaml:"max_open_conns"`
 		MaxIdleConns int    `json:"max_idle_conns" yaml:"max_idle_conns"`
 	}

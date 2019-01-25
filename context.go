@@ -6,12 +6,15 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	"github.com/wbsifan/devgo/json"
 )
 
 type (
 	Context interface {
 		echo.Context
 		BindValidate(interface{}) error
+		GetFormat() string
+		SetFormat(t string)
 		IsAjax() bool
 		GetBody() string
 		GetData() Map
@@ -28,6 +31,12 @@ type (
 const (
 	OUTPUT_DATA_KEY = "OUTPUT_DATA_KEY"
 	RAW_BODY_KEY    = "RAW_BODY_KEY"
+	FORMAT_TYPE_KEY = "FORMAT_TYPE_KEY"
+	FORMAT_RAW      = "raw"
+	FORMAT_HTML     = "html"
+	FORMAT_JSON     = "json"
+	FORMAT_JSONP    = "jsonp"
+	FORMAT_XML      = "xml"
 )
 
 // BindValidate
@@ -38,6 +47,21 @@ func (this *context) BindValidate(obj interface{}) error {
 	}
 	err = this.Validate(obj)
 	return err
+}
+
+// GetFormat
+func (this *context) GetFormat() string {
+	var t = ""
+	ret := this.Get(FORMAT_TYPE_KEY)
+	if ret != nil {
+		t = ret.(string)
+	}
+	return t
+}
+
+// SetFormat
+func (this *context) SetFormat(t string) {
+	this.Set(FORMAT_TYPE_KEY, t)
 }
 
 // IsAjax
@@ -103,6 +127,33 @@ func (this *context) RetData(data ...interface{}) error {
 	}
 	out.Data = this.GetData()
 	return this.JSON(http.StatusOK, out)
+}
+
+// JSON
+func (this *context) JSON(code int, i interface{}) (err error) {
+	b, err := json.Marshal(i)
+	if err != nil {
+		return
+	}
+	return this.JSONBlob(code, b)
+}
+
+// JSONPretty
+func (this *context) JSONPretty(code int, i interface{}, indent string) (err error) {
+	b, err := json.MarshalIndent(i, "", indent)
+	if err != nil {
+		return
+	}
+	return this.JSONBlob(code, b)
+}
+
+// JSONP
+func (this *context) JSONP(code int, callback string, i interface{}) (err error) {
+	b, err := json.Marshal(i)
+	if err != nil {
+		return
+	}
+	return this.JSONPBlob(code, callback, b)
 }
 
 // RetError
