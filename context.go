@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/wbsifan/devgo/json"
+	"github.com/wbsifan/devgo/errors"
 )
 
 type (
@@ -29,9 +29,9 @@ type (
 )
 
 const (
-	OUTPUT_DATA_KEY = "OUTPUT_DATA_KEY"
-	RAW_BODY_KEY    = "RAW_BODY_KEY"
-	FORMAT_TYPE_KEY = "FORMAT_TYPE_KEY"
+	OUTPUT_DATA_KEY = "_output_data"
+	RAW_BODY_KEY    = "_raw_body"
+	FORMAT_TYPE_KEY = "_format_type"
 	FORMAT_RAW      = "raw"
 	FORMAT_HTML     = "html"
 	FORMAT_JSON     = "json"
@@ -129,37 +129,9 @@ func (this *context) RetData(data ...interface{}) error {
 	return this.JSON(http.StatusOK, out)
 }
 
-// JSON
-func (this *context) JSON(code int, i interface{}) (err error) {
-	b, err := json.Marshal(i)
-	if err != nil {
-		return
-	}
-	return this.JSONBlob(code, b)
-}
-
-// JSONPretty
-func (this *context) JSONPretty(code int, i interface{}, indent string) (err error) {
-	b, err := json.MarshalIndent(i, "", indent)
-	if err != nil {
-		return
-	}
-	return this.JSONBlob(code, b)
-}
-
-// JSONP
-func (this *context) JSONP(code int, callback string, i interface{}) (err error) {
-	b, err := json.Marshal(i)
-	if err != nil {
-		return
-	}
-	return this.JSONPBlob(code, callback, b)
-}
-
 // RetError
 func (this *context) RetError(err interface{}, code ...int) error {
-	be := NewError(err, code...)
-	this.Logger().Error(be)
+	be := errors.New(err, 1).SetCode(code...)
 	return catchError(be, this)
 }
 

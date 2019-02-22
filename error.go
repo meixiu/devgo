@@ -1,22 +1,13 @@
 package devgo
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/labstack/echo"
+	"github.com/wbsifan/devgo/errors"
 )
 
 type (
 	Error interface {
-		Status() int
-		Code() int
-		Error() string
-	}
-
-	baseError struct {
-		code    int
-		message interface{}
+		errors.Error
 	}
 
 	ErrorHandler func(err Error, c Context) error
@@ -26,39 +17,12 @@ var (
 	catchError = defaultErrorHandler
 )
 
-func (this *baseError) Status() int {
-	he, ok := this.message.(*echo.HTTPError)
-	if ok {
-		return he.Code
-	}
-	return http.StatusOK
+func NewError(err interface{}, code ...int) Error {
+	return errors.New(err, 1).SetCode(code...)
 }
 
-func (this *baseError) Code() int {
-	return this.code
-}
-
-// Error implements of Error interface
-func (this *baseError) Error() string {
-	return fmt.Sprintf("%v", this.message)
-}
-
-func NewError(msg interface{}, code ...int) Error {
-	be, ok := msg.(Error)
-	if !ok {
-		if len(code) > 0 {
-			be = &baseError{
-				code:    code[0],
-				message: msg,
-			}
-		} else {
-			be = &baseError{
-				code:    -1,
-				message: msg,
-			}
-		}
-	}
-	return be
+func IsError(err error, target error) bool {
+	return errors.Is(err, target)
 }
 
 func NewErrorHandler(handler ...ErrorHandler) echo.HTTPErrorHandler {
@@ -66,8 +30,10 @@ func NewErrorHandler(handler ...ErrorHandler) echo.HTTPErrorHandler {
 		catchError = handler[0]
 	}
 	return func(err error, c echo.Context) {
-		be := NewError(err)
-		c.Logger().Error(be)
+		be, ok := err.(Error)
+		if !ok {
+			be = errors.New(err, 0)
+		}
 		err = catchError(be, GetContext(c))
 		if err != nil {
 			c.Logger().Error(err)
@@ -76,8 +42,23 @@ func NewErrorHandler(handler ...ErrorHandler) echo.HTTPErrorHandler {
 }
 
 func defaultErrorHandler(err Error, c Context) error {
+	if Debug {
+		c.Logger().Errorf("%s(%d)\n%s", err.Error(), err.Code(), err.Stack())
+	} else {
+		c.Logger().Errorf("%s(%d)", err.Error(), err.Code())
+	}
 	out := NewOutput()
 	out.Code = err.Code()
 	out.Message = err.Error()
-	return c.JSON(err.Status(), out)
+	t := c.GetFormat()
+	// isAjx or json
+	if c.IsAjax() || t == FORMAT_JSON {
+		return c.JSON(err.Status(), out)
+	}
+	// default
+	return c.Display("error.html", Map{
+		"path":    c.Path(),
+		"code":    err.Code(),
+		"message": err.Error(),
+	})
 }

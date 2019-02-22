@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"strings"
 	"time"
 
 	yaml "gopkg.in/yaml.v2"
 )
 
 const (
-	TYPE_YAML = "YAML"
-	TYPE_JSON = "JSON"
+	TYPE_YAML = "yaml"
+	TYPE_JSON = "json"
 )
 
 type (
@@ -40,6 +41,13 @@ type (
 		Password string `json:"password" yaml:"password"`
 		Db       int    `json:"db" yaml:"db"`
 	}
+	SessionConfig struct {
+		Store  string `json:"store" yaml:"store"`
+		Secret string `json:"secret" yaml:"secret"`
+		Path   string `json:"path" yaml:"path"`
+		Expire int    `json:"expire" yaml:"expire"`
+	}
+	// JwtConfig
 	JwtConfig struct {
 		Name   string        `json:"name" yaml:"name"`
 		Lookup string        `json:"lookup" yaml:"lookup"`
@@ -62,6 +70,7 @@ type (
 
 // NewParser 创建新的解析器
 func NewConfigParser(t string) ConfigParser {
+	t = strings.ToLower(t)
 	switch t {
 	case TYPE_YAML:
 		return &YAMLParser{}
