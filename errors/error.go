@@ -2,8 +2,9 @@ package errors
 
 import (
 	"fmt"
+	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 
 	"github.com/wbsifan/devgo/helper"
 )
@@ -64,7 +65,7 @@ func (this *warpError) Status() int {
 	if err, ok := this.err.(*echo.HTTPError); ok {
 		return err.Code
 	}
-	return 200
+	return http.StatusBadRequest
 }
 
 func (this *warpError) SetPrefix(prefix ...string) *warpError {

@@ -9,7 +9,7 @@ import (
 	"reflect"
 
 	"github.com/flosch/pongo2"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // Renderer manages a pongo2 TemplateSet
