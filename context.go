@@ -29,14 +29,14 @@ type (
 )
 
 const (
-	OUTPUT_DATA_KEY = "_output_data"
-	RAW_BODY_KEY    = "_raw_body"
-	FORMAT_TYPE_KEY = "_format_type"
-	FORMAT_RAW      = "raw"
-	FORMAT_HTML     = "html"
-	FORMAT_JSON     = "json"
-	FORMAT_JSONP    = "jsonp"
-	FORMAT_XML      = "xml"
+	outputDataKey = "_output_data"
+	rawBodyKey    = "_raw_body"
+	formatTypeKey = "_format_type"
+	formatRaw     = "raw"
+	formatHtml    = "html"
+	formatJson    = "json"
+	formatJsonp   = "jsonp"
+	formatXml     = "xml"
 )
 
 // BindValidate
@@ -52,7 +52,7 @@ func (this *context) BindValidate(obj interface{}) error {
 // GetFormat
 func (this *context) GetFormat() string {
 	var t = ""
-	ret := this.Get(FORMAT_TYPE_KEY)
+	ret := this.Get(formatTypeKey)
 	if ret != nil {
 		t = ret.(string)
 	}
@@ -61,7 +61,7 @@ func (this *context) GetFormat() string {
 
 // SetFormat
 func (this *context) SetFormat(t string) {
-	this.Set(FORMAT_TYPE_KEY, t)
+	this.Set(formatTypeKey, t)
 }
 
 // IsAjax
@@ -72,7 +72,7 @@ func (this *context) IsAjax() bool {
 
 // GetBody
 func (this *context) GetBody() string {
-	reqBody := []byte{}
+	reqBody := make([]byte, 0)
 	if this.Request().Body != nil {
 		reqBody, _ = ioutil.ReadAll(this.Request().Body)
 	}
@@ -83,10 +83,10 @@ func (this *context) GetBody() string {
 // GetData
 func (this *context) GetData() Map {
 	var data Map
-	ret := this.Get(OUTPUT_DATA_KEY)
+	ret := this.Get(outputDataKey)
 	if ret == nil {
 		data = make(Map)
-		this.Set(OUTPUT_DATA_KEY, data)
+		this.Set(outputDataKey, data)
 	} else {
 		data = ret.(Map)
 	}

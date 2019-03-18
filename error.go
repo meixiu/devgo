@@ -52,7 +52,7 @@ func defaultErrorHandler(err Error, c Context) error {
 	out.Message = err.Error()
 	t := c.GetFormat()
 	// isAjx or json
-	if c.IsAjax() || t == FORMAT_JSON {
+	if c.IsAjax() || t == formatJson {
 		return c.JSON(err.Status(), out)
 	}
 	// default
