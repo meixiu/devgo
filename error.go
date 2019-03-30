@@ -1,6 +1,8 @@
 package devgo
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/wbsifan/devgo/errors"
 )
@@ -51,14 +53,12 @@ func defaultErrorHandler(err Error, c Context) error {
 	out.Code = err.Code()
 	out.Message = err.Error()
 	t := c.GetFormat()
-	// isAjx or json
-	if c.IsAjax() || t == formatJson {
-		return c.JSON(err.Status(), out)
+	if t == FormatHtml && c.IsAjax() == false {
+		return c.Display("error.html", Map{
+			"path":    c.Path(),
+			"code":    err.Code(),
+			"message": err.Error(),
+		})
 	}
-	// default
-	return c.Display("error.html", Map{
-		"path":    c.Path(),
-		"code":    err.Code(),
-		"message": err.Error(),
-	})
+	return c.JSON(http.StatusBadRequest, out)
 }

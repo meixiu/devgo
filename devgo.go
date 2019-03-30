@@ -1,12 +1,13 @@
 package devgo
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/wbsifan/devgo/json"
+
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -16,7 +17,7 @@ type (
 )
 
 var (
-	Debug = true
+	Debug = false
 )
 
 func init() {
@@ -29,9 +30,6 @@ func Default() *echo.Echo {
 	e.Debug = Debug
 	e.HideBanner = true
 	e.HTTPErrorHandler = NewErrorHandler()
-	e.Renderer = NewRenderer("views", Map{
-		"json": JSONEncode,
-	})
 	e.Validator = NewValidator()
 	e.Binder = NewBinder()
 	// middleware
@@ -43,6 +41,9 @@ func Default() *echo.Echo {
 	}))
 	// store := session.NewCookieStore([]byte(Config.Session.Secret))
 	// e.Use(session.NewSession("sid", store))
+	//e.Renderer = NewRenderer("views", Map{
+	//	"json": JSONEncode,
+	//})
 	e.Logger.SetHeader(`[${time_rfc3339}][${level}]`)
 	return e
 }
@@ -70,10 +71,4 @@ func DumpYAML(item ...interface{}) {
 			fmt.Println(string(b))
 		}
 	}
-}
-
-// JSONEncode
-func JSONEncode(data interface{}) string {
-	b, _ := json.Marshal(data)
-	return string(b)
 }

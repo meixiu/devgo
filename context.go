@@ -32,11 +32,11 @@ const (
 	outputDataKey = "_output_data"
 	rawBodyKey    = "_raw_body"
 	formatTypeKey = "_format_type"
-	formatRaw     = "raw"
-	formatHtml    = "html"
-	formatJson    = "json"
-	formatJsonp   = "jsonp"
-	formatXml     = "xml"
+	FormatRaw     = "raw"
+	FormatHtml    = "html"
+	FormatJson    = "json"
+	FormatJsonp   = "jsonp"
+	FormatXml     = "xml"
 )
 
 // BindValidate

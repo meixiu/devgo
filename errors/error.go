@@ -2,9 +2,6 @@ package errors
 
 import (
 	"fmt"
-	"net/http"
-
-	"github.com/labstack/echo/v4"
 
 	"github.com/wbsifan/devgo/helper"
 )
@@ -13,7 +10,6 @@ type (
 	Error interface {
 		SetCode(code ...int) *warpError
 		SetPrefix(prefix ...string) *warpError
-		Status() int
 		Code() int
 		Error() string
 		Stack() string
@@ -59,13 +55,6 @@ func Is(e error, target error) bool {
 
 func (this *warpError) Is(target error) bool {
 	return Is(this, target)
-}
-
-func (this *warpError) Status() int {
-	if err, ok := this.err.(*echo.HTTPError); ok {
-		return err.Code
-	}
-	return http.StatusBadRequest
 }
 
 func (this *warpError) SetPrefix(prefix ...string) *warpError {

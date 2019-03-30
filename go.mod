@@ -5,6 +5,7 @@ require (
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff
 	github.com/davecgh/go-spew v1.1.1
 	github.com/flosch/pongo2 v0.0.0-20181225140029-79872a7b2769
+	github.com/go-redis/redis v6.15.2+incompatible // indirect
 	github.com/gorilla/sessions v1.1.3
 	github.com/json-iterator/go v1.1.5
 	github.com/labstack/echo/v4 v4.0.0

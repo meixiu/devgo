@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	TYPE_YAML = "yaml"
-	TYPE_JSON = "json"
+	ConfigTypeYaml = "yaml"
+	ConfigTypeJson = "json"
 )
 
 type (
@@ -72,9 +72,9 @@ type (
 func NewConfigParser(t string) ConfigParser {
 	t = strings.ToLower(t)
 	switch t {
-	case TYPE_YAML:
+	case ConfigTypeYaml:
 		return &YAMLParser{}
-	case TYPE_JSON:
+	case ConfigTypeJson:
 		return &JSONParser{}
 	default:
 		panic("Unsupported types")
