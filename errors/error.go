@@ -3,7 +3,7 @@ package errors
 import (
 	"fmt"
 
-	"github.com/wbsifan/devgo/helper"
+	"github.com/meixiu/devgo/helper"
 )
 
 type (

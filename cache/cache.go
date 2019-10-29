@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/wbsifan/devgo/errors"
+	"github.com/meixiu/devgo/errors"
 
-	"github.com/wbsifan/devgo/helper"
+	"github.com/meixiu/devgo/helper"
 
 	"github.com/go-redis/redis"
 )

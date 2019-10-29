@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/wbsifan/devgo/json"
+	"github.com/meixiu/devgo/json"
 )
 
 type (

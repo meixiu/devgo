@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/wbsifan/devgo/errors"
+	"github.com/meixiu/devgo/errors"
 )
 
 type (
