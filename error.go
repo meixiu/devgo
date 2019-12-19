@@ -3,6 +3,8 @@ package devgo
 import (
 	"net/http"
 
+	"github.com/labstack/echo"
+
 	"github.com/labstack/echo/v4"
 	"github.com/meixiu/devgo/errors"
 )
@@ -60,5 +62,5 @@ func defaultErrorHandler(err Error, c Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusBadRequest, out)
+	return c.JSON(http.StatusOK, out)
 }
